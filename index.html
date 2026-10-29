@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>1.3.7 | Day 3 Asynchronous Homework | 10 Week English Program</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f9f1ff',
+                            100: '#dbd0e2',
+                            200: '#c8b9d3',
+                            300: '#ad96bd',
+                            400: '#8968a0',
+                            500: '#8968a0',
+                            600: '#8968a0',
+                            700: '#8968a0',
+                            800: '#8968a0',
+                            900: '#2a2c2e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<!-- Custom Styles for Flipcards & Print formatting -->
+<style>
+        /* Helvetica is loaded from the user device or an appropriately licensed webfont. */
+        
+        body {
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f3f3f3;
+            color: #2a2c2e;
+        }
+
+        /* Perspective for 3D flip card effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            .step-section {
+                display: block !important;
+                page-break-after: always;
+            }
+            .shadow-lg, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1;
+            }
+        }
+
+        .step-section {
+            display: none;
+        }
+
+        .step-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        :root { --subject: #8968a0; --subject-light: #dbd0e2; --ink: #2a2c2e; }
+        /* Master header: deep purple with light-purple controls */
+        .master-header { background:#8968a0 !important; color:#ffffff !important; }
+        .master-header h1 { color:#ffffff !important; }
+        .master-header .brand-badge { background:#dbd0e2 !important; color:#5c3978 !important; }
+        .master-header .header-meta { color:#e0cdf4 !important; }
+        .master-tabs { background:#dbd0e2 !important; border-color:#ad96bd !important; }
+        .master-tabs .nav-tab:not(.bg-brand-600) { color:#2a2c2e !important; }
+        .master-tabs .nav-tab:not(.bg-brand-600):hover { background:#c8b9d3 !important; color:#2a2c2e !important; }
+        .master-tabs .nav-tab.bg-brand-600 { background:#8968a0 !important; color:#fff !important; }
+        .master-header button.bg-brand-600 { background:#dbd0e2 !important; color:#5c3978 !important; }
+        .master-header button.bg-brand-600:hover { background:#c8b9d3 !important; }
+        .key-accuracy-rule { background:#f9f1ff !important; border-left-color:#8968a0 !important; color:#5c3978 !important; }
+
+        html { font-size: 16px; }
+        body, button, input, textarea, select { font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        button { font-size: 15px; font-weight: 600; }
+        main h2 { font-size: 28px; line-height: 1.25; font-weight: 700; }
+        main h3 { font-size: 22px; line-height: 1.3; font-weight: 600; }
+        main p { line-height: 1.6; }
+        main .text-xs { font-size: 14px; }
+        main .text-sm { font-size: 16px; }
+        main .text-base { font-size: 16px; }
+        main .text-lg { font-size: 18px; }
+        main input, main textarea, main select { background: #fff; color: #2a2c2e; font-size: 16px; }
+        main input:focus, main textarea:focus, main select:focus { outline: 2px solid var(--subject); outline-offset: 2px; }
+        .nav-tab { font-size: 14px; }
+        .nav-tab:focus-visible, button:focus-visible { outline: 3px solid #ad96bd; outline-offset: 2px; }
+        .master-bottom-nav { display:flex; align-items:center; justify-content:space-between; gap:16px; max-width:1152px; margin:0 auto 20px; padding:12px 20px; }
+        .master-bottom-nav button { background:var(--subject); color:white; padding:11px 20px; border-radius:9px; }
+        .master-bottom-nav button:disabled { background:#d9d9d9; color:#54595f; cursor:not-allowed; }
+        #section-progress-label { color:#e2e2e2; font-size:12px; margin-left:12px; white-space:nowrap; }
+        @media (max-width: 768px) { main h2 {font-size:25px;} main h3 {font-size:20px;} .master-bottom-nav {padding:12px;} }
+        @media print { .master-bottom-nav {display:none!important;} .step-section {break-after:auto;page-break-after:auto;} }
+    
+.homework-input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;margin:8px 0 12px} main .question{padding:16px;margin:12px 0;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc}main .question label{display:block;margin:8px 0;cursor:pointer}main .question input[type=radio]{margin-right:8px;accent-color:#8968a0} main .feedback:not(.hide){padding:12px;margin:10px 0;background:#f8fafc;border-left:4px solid #8968a0;border-radius:6px;white-space:pre-line}main .hide{display:none!important}main .check{display:flex;gap:10px;align-items:flex-start;margin:9px 0}main .check input{margin-top:6px;accent-color:#8968a0}main textarea{width:100%;min-height:110px;padding:12px;border:1px solid #cbd5e1;border-radius:10px;margin:8px 0 14px}main .good{color:#166534}main .bad{color:#b91c1c}main .hint{background:#f9f1ff;border-left:4px solid #8968a0;padding:16px;border-radius:8px;margin:14px 0}main .homework-action{background:#8968a0;color:white;padding:11px 19px;border-radius:10px;margin:10px 8px 10px 0}main .homework-action:hover{background:#71558a}main details{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin:12px 0}main details summary{cursor:pointer;font-weight:600}main .mini{font-size:14px}main .muted{color:#64748b}main .pill{display:inline-block;background:#dbd0e2;color:#5c3978;border-radius:30px;padding:5px 12px;font-weight:700;font-size:14px;margin-bottom:12px}main .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}main svg#familyScene{width:100%;max-height:350px}main .progress{height:9px;background:#e2e8f0;border-radius:30px;overflow:hidden;margin:10px 0}main .progress>div{height:100%;background:#8968a0;width:0;transition:width .3s}main a{color:#5c3978;text-decoration:underline}main input[type=text],main input[type=url]{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px}main fieldset{border:0;padding:0}main legend.hide{position:absolute;left:-9999px;display:block!important} @media print{main button.homework-action{display:none!important}}
+</style>
+<style>
+.road-shell{margin-top:1rem}.road-hud{display:flex;justify-content:space-between;gap:12px;font-weight:700;margin-bottom:8px}.road-question{background:#f9f1ff;border:1px solid #dbd0e2;border-radius:12px;padding:15px;font-weight:700;text-align:center;margin-bottom:10px;min-height:68px}.road-stage{position:relative;aspect-ratio:600/420;border-radius:14px;overflow:hidden;border:1px solid #c8b9d3;background:#4c9a52}.road-stage svg{width:100%;height:100%;display:block}.road-sign{position:absolute;top:3%;width:43%;min-height:62px;border:3px solid white;border-radius:10px;background:#285d44;color:white;font-weight:700;font-size:clamp(12px,2vw,17px);padding:8px;box-shadow:0 3px 10px #0005;cursor:pointer;z-index:2;overflow-wrap:anywhere}.road-sign:disabled{opacity:.75;cursor:wait}#roadLeft{left:3%}#roadRight{right:3%}.road-sign.ok{background:#16803a}.road-sign.bad{background:#b42318}.road-controls{display:flex;justify-content:center;gap:12px;margin:12px 0}.road-controls button{background:#4b286d;color:white;border-radius:9px;padding:12px 20px;font-weight:700}.road-overlay{position:absolute;inset:0;background:#171329d9;display:flex;align-items:center;justify-content:center;z-index:3;padding:14px}.road-overlay.hide{display:none}.road-modal{background:white;border-radius:14px;padding:22px;text-align:center;max-width:430px;width:100%;max-height:100%;overflow:auto}.road-modal h3{color:#2a2c2e}.question-card{padding:15px;margin:12px 0;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc}.question-card label{display:block;margin:8px 0;cursor:pointer}.question-card input{margin-right:9px}.question-card .why{margin-top:8px;padding:9px;border-radius:8px;background:#fff}.feedback{margin-top:12px}.homework-action.secondary{background:#e9e3ef;color:#4b286d;margin-left:8px}.road-shell .road-controls button:focus-visible,.road-sign:focus-visible{outline:4px solid #fbbf24;outline-offset:2px}@media(prefers-reduced-motion:reduce){.road-stage *{animation:none!important;transition:none!important}}@media print{.road-controls,.road-overlay,.road-sign{display:none!important}.step-section{display:block!important;break-inside:avoid}}
+</style></head>
+<body class="min-h-screen flex flex-col">
+<!-- TOP HEADER & NAVIGATION -->
+<header class="master-header text-white sticky top-0 z-50 shadow-md no-print">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<!-- Branding -->
+<div class="flex items-center space-x-3">
+<div class="brand-badge bg-[#dbd0e2] text-[#4b286d] font-bold p-2 rounded-lg text-sm tracking-wide">
+                        10W
+                    </div>
+<div>
+<h1 class="font-bold text-lg leading-tight">Lesson 1.3.7: Asynchronous Homework</h1>
+<p class="header-meta text-xs font-medium text-[#e0cdf4]">10 Week English Program · Day 3 · Asynchronous Homework · CEFR A2–B1 · 70 min</p>
+</div>
+</div>
+<!-- Print & Export Action -->
+<button class="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:px-4 rounded-lg transition-colors" onclick="window.print()">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="hidden sm:inline">Print / Save PDF</span>
+</button>
+</div>
+</div>
+<!-- Progress Bar -->
+<div aria-label="Lesson section progress" aria-valuemax="7" aria-valuemin="0" aria-valuenow="1" class="w-full bg-[#ad96bd] h-1.5" id="progress-track" role="progressbar">
+<div class="bg-brand-500 h-full transition-all duration-300" id="progress-bar" style="width:14.2857%"></div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="master-tabs bg-[#dbd0e2] border-t border-[#ad96bd] overflow-x-auto">
+<div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 py-2 text-xs sm:text-sm whitespace-nowrap"><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-white bg-brand-600" id="tab-0" onclick="switchStep(0)">Overview</button><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-slate-300 hover:text-white hover:bg-slate-700" id="tab-1" onclick="switchStep(1)">1. Speaking (15m)</button><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-slate-300 hover:text-white hover:bg-slate-700" id="tab-2" onclick="switchStep(2)">2. Grammar (15m)</button><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-slate-300 hover:text-white hover:bg-slate-700" id="tab-3" onclick="switchStep(3)">3. Reading (10m)</button><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-slate-300 hover:text-white hover:bg-slate-700" id="tab-4" onclick="switchStep(4)">4. Listening (15m)</button><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-slate-300 hover:text-white hover:bg-slate-700" id="tab-5" onclick="switchStep(5)">5. Writing (5m)</button><button class="nav-tab px-3 py-1.5 rounded-md font-medium text-slate-300 hover:text-white hover:bg-slate-700" id="tab-6" onclick="switchStep(6)">6. Drive &amp; Decide (10m)</button></div>
+</nav>
+</header>
+<!-- MAIN CONTAINER -->
+<main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+<!-- STEP 0: OVERVIEW & OBJECTIVES -->
+<!-- STEP 1: WARM-UP -->
+<!-- STEP 2: VOCABULARY LAB -->
+<!-- STEP 3: CONTROLLED PRACTICE -->
+<!-- STEP 4: DIALOGUE ANALYSIS -->
+<!-- STEP 5: SPEAKING SIMULATOR -->
+<!-- STEP 6: FINAL CHALLENGE & REPORT -->
+<section class="step-section active" id="step-0"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div>
+<span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">LESSON 1.3.7 OVERVIEW</span>
+<h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">Getting Around &amp; Getting Things Done</h2>
+</div>
+<div class="text-right">
+<span class="text-sm text-slate-500 block">Total Duration</span>
+<span class="text-xl font-bold text-slate-800">70 Minutes</span>
+</div>
+</div>
+<p class="text-slate-600 leading-relaxed mb-6">Welcome to Day 3 asynchronous practice. Build toward B1 by applying workplace responsibilities, professional requests, procedural instructions, appointment details, and US/Canadian geography in realistic situations. Finish by navigating to your Training Center in Drive &amp; Decide.</p>
+<!-- Objectives Grid -->
+<div class="grid md:grid-cols-3 gap-4 mb-8">
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+<div class="text-brand-600 font-bold text-lg mb-1">01. Communicate</div>
+<p class="text-xs text-slate-600">Explain responsibilities, clarify details, and give clear workplace directions.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+<div class="text-brand-600 font-bold text-lg mb-1">02. Analyze</div>
+<p class="text-xs text-slate-600">Interpret B1-level workplace reading and listening, including changes, deadlines, and implied meaning.</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+<div class="text-brand-600 font-bold text-lg mb-1">03. Navigate</div>
+<p class="text-xs text-slate-600">Verify locations and complete a ten-intersection navigation challenge.</p>
+</div>
+</div>
+<!-- Time Breakdown Table -->
+<h3 class="font-bold text-slate-800 text-lg mb-3">Lesson Roadmap</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs sm:text-sm border-collapse">
+<thead>
+<tr class="bg-slate-100 text-slate-700">
+<th class="p-3 rounded-l-lg">Stage</th>
+<th class="p-3">Focus Area</th>
+<th class="p-3">Time</th>
+<th class="p-3 rounded-r-lg">Activity Output</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200"><tr><td class="p-3 font-semibold text-slate-800">1</td><td class="p-3 text-slate-600">Speaking · Workplace role &amp; directions</td><td class="p-3 text-slate-500">15 min</td><td class="p-3 text-slate-600">2–3 minute Vocaroo recording</td></tr><tr><td class="p-3 font-semibold text-slate-800">2</td><td class="p-3 text-slate-600">Grammar &amp; Language · Imperatives, requests &amp; responsibilities</td><td class="p-3 text-slate-500">15 min</td><td class="p-3 text-slate-600">12 auto-checked answers</td></tr><tr><td class="p-3 font-semibold text-slate-800">3</td><td class="p-3 text-slate-600">Reading · Workplace operations update</td><td class="p-3 text-slate-500">10 min</td><td class="p-3 text-slate-600">10 comprehension answers</td></tr><tr><td class="p-3 font-semibold text-slate-800">4</td><td class="p-3 text-slate-600">Listening &amp; Shadowing · A change to orientation arrangements</td><td class="p-3 text-slate-500">15 min</td><td class="p-3 text-slate-600">10 comprehension answers + shadowing</td></tr><tr><td class="p-3 font-semibold text-slate-800">5</td><td class="p-3 text-slate-600">Writing · Professional customer response</td><td class="p-3 text-slate-500">5 min</td><td class="p-3 text-slate-600">40–70 word response</td></tr><tr><td class="p-3 font-semibold text-slate-800">6</td><td class="p-3 text-slate-600">Drive &amp; Decide · Integrated Day 3 challenge</td><td class="p-3 text-slate-500">10 min</td><td class="p-3 text-slate-600">10 intersections · 3 lives</td></tr></tbody>
+</table>
+</div>
+<div class="mt-8 text-center">
+<button class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-8 rounded-xl text-base shadow-md transition-all" onclick="switchStep(1)">Start Lesson: Step 1 (Speaking) →</button>
+</div>
+</div></section><section class="step-section" id="step-1"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6"><span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">01 · Speaking · 15 min</span><h2 class="mt-3">Explain Your Role &amp; Give Directions</h2><p>Record a <strong>2–3 minute</strong> message for a new coworker who is visiting your workplace for the first time. Include:</p><ol class="list-decimal ml-6 mb-4"><li>Two responsibilities using <em>I'm in charge of / I've been assigned to / I handle</em>.</li><li>One issue you might <em>look into</em> and how you will <em>keep someone updated</em>.</li><li>Clear directions to the service desk using <em>first, next, finally</em> and imperatives.</li><li>One polite request for confirmation.</li></ol><p>Record using <a href="https://vocaroo.com/" rel="noopener" target="_blank">Vocaroo</a>. Share your recording according to your trainer's instructions.</p><label for="vocaroo">Vocaroo recording link</label><input class="homework-input" id="vocaroo" placeholder="https://voca.ro/..." type="url"/><div class="mt-3" id="speakChecks"></div><button class="homework-action" onclick="checkSpeaking()">Check speaking checklist</button><div aria-live="polite" class="feedback" id="speakFeedback"></div><div class="mt-8 flex justify-between"><button class="text-slate-500 hover:text-slate-700 font-medium text-sm" onclick="switchStep(0)">← Back</button><button class="text-brand-600 hover:text-brand-800 font-bold text-sm" onclick="switchStep(2)">Next Section →</button></div></div></section><section class="step-section" id="step-2"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6"><span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">02 · Grammar &amp; Language · 15 min</span><h2 class="mt-3">Imperatives, Requests &amp; Workplace English</h2><p>Choose the best answer in each situation. The questions include workplace vocabulary, imperatives, sequencing, and requests. Check all 12 answers for explanations.</p><div id="grammarQs"></div><button class="homework-action" onclick="gradeSet('grammar')">Check all 12 answers</button><button class="homework-action secondary" onclick="resetSet('grammar')">Reset</button><div aria-live="polite" class="feedback" id="grammarFeedback"></div><div class="mt-8 flex justify-between"><button class="text-slate-500 hover:text-slate-700 font-medium text-sm" onclick="switchStep(1)">← Back</button><button class="text-brand-600 hover:text-brand-800 font-bold text-sm" onclick="switchStep(3)">Next Section →</button></div></div></section><section class="step-section" id="step-3"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6"><span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">03 · Reading · 10 min</span><h2 class="mt-3">Reading: A Change of Plans at Northgate</h2><p>Read the internal operations update carefully. Identify responsibilities, deadlines, reasons for changes, and what staff should do next. Then answer 10 comprehension questions.</p><div class="p-5 bg-slate-50 rounded-xl border border-slate-200 my-4"><h3>Northgate Training Center | Operations Update</h3><p><strong>To:</strong> New hires and orientation support team<br/><strong>From:</strong> Maya Chen, Operations Coordinator<br/><strong>Subject:</strong> Updated orientation arrangements for July 14</p>
+<p>Thank you for confirming your attendance at next Tuesday’s orientation. The session will still take place <strong>on July 14, from 9:00 to 11:00 AM</strong>, but we have made several changes to the arrival procedure. The original check-in area at the main entrance is temporarily unavailable because maintenance staff are replacing the security system. Instead, please report to the <strong>service desk on the ground floor of the east building, at 24 Oak Street</strong>. The east entrance is beside the public library, not the entrance facing the parking lot.</p>
+<p>Although orientation begins at 9:00 AM, everyone must complete identity verification <strong>by 8:45 AM</strong>. Please bring a photo ID and the confirmation email you received last week. Do not share your account password with anyone, including the check-in team. If your confirmation email has not arrived <strong>by Friday</strong>, contact us before the weekend so we can follow up on the request.</p>
+<p>Responsibilities have also been reassigned. Jordan is <strong>in charge of setting up</strong> the temporary welcome area and making sure the signs are visible from Oak Street. Alex has been <strong>assigned to coordinate with</strong> the building team and direct visitors from the library to the correct entrance. Maya will <strong>handle</strong> identity-verification questions and <strong>look into</strong> any registration problems. Because the support team may be busy during the first 15 minutes, please avoid asking several employees to investigate the same issue. One team member will take responsibility and keep you updated.</p>
+<p>Finally, participants joining the optional afternoon workshop should note that it runs <strong>from 2:00 to 4:00 PM</strong> in Room 204, <strong>not</strong> the training room used in the morning. The workshop is open to new hires who have completed orientation; attendance is not required. If you are unsure which session you registered for, please ask: <em>“Could you confirm whether I’m registered for the afternoon workshop?”</em> We appreciate your flexibility while the building improvements are completed.</p></div><div id="readingQs"></div><button class="homework-action" onclick="gradeSet('reading')">Check all 10 answers</button><button class="homework-action secondary" onclick="resetSet('reading')">Reset</button><div aria-live="polite" class="feedback" id="readingFeedback"></div><div class="mt-8 flex justify-between"><button class="text-slate-500 hover:text-slate-700 font-medium text-sm" onclick="switchStep(2)">← Back</button><button class="text-brand-600 hover:text-brand-800 font-bold text-sm" onclick="switchStep(4)">Next Section →</button></div></div></section><section class="step-section" id="step-4"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6"><span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">04 · Listening &amp; Pronunciation · 15 min</span><h2 class="mt-3">Listening: A Last-Minute Orientation Change</h2><div class="p-4 bg-slate-50 rounded-xl border border-slate-200"><strong>Audio provided by your trainer</strong><p>Your trainer will provide a recording of a realistic workplace call. Listen once for the main issue, then a second time for responsibilities, timing, and the agreed next steps. Answer the 10 questions before revealing the transcript.</p></div><div class="mt-4" id="listeningQs"></div><button class="homework-action" onclick="gradeSet('listening')">Check all 10 answers</button><button class="homework-action secondary" onclick="resetSet('listening')">Reset</button><div aria-live="polite" class="feedback" id="listeningFeedback"></div><details class="mt-5 p-4 bg-slate-50 rounded-xl border border-slate-200"><summary class="font-semibold cursor-pointer">Reveal transcript after listening</summary><div class="mt-3" id="transcript"><p><strong>Alex:</strong> Hi, Jordan. I’m on Oak Street, just outside the library. I followed the address in yesterday’s email, but the main entrance is closed. Could you clarify where I’m supposed to check in?</p>
+<p><strong>Jordan:</strong> Of course, and sorry for the confusion. We ran into an issue with the security system, so check-in has been moved to the east building. Are you facing the library entrance?</p>
+<p><strong>Alex:</strong> Yes. There’s a parking lot on my right and a small café across the street.</p>
+<p><strong>Jordan:</strong> Perfect. Walk north along Oak Street, past the café. At the next intersection, turn right, then look for a blue sign that says “Visitor Check-In.” Don’t use the door next to the parking lot; it leads to the maintenance area.</p>
+<p><strong>Alex:</strong> Let me repeat that to make sure I understood: go north, pass the café, turn right at the intersection, and follow the blue sign. Is that correct?</p>
+<p><strong>Jordan:</strong> Exactly. And make sure you have your photo ID and confirmation email ready. The session starts at nine, but verification must be completed by eight forty-five.</p>
+<p><strong>Alex:</strong> I have my ID, but I can’t find the email. I thought we could bring it later.</p>
+<p><strong>Jordan:</strong> The email is required for check-in, but we can help you retrieve it. I’m in charge of the welcome area, so I can’t leave my station. Maya handles registration problems. I’ll coordinate with her and ask her to meet you at the service desk.</p>
+<p><strong>Alex:</strong> Would it be possible to confirm whether I’m also registered for the afternoon workshop? I remember signing up, but I’m not completely sure.</p>
+<p><strong>Jordan:</strong> Maya can verify that as well. Just so you know, the workshop is optional and runs from two to four in Room 204. It isn’t in the same room as the morning orientation.</p>
+<p><strong>Alex:</strong> Thanks. Should I wait outside until Maya arrives?</p>
+<p><strong>Jordan:</strong> No, please go straight to the service desk. I’ll follow up with Maya now, and I’ll keep you updated if anything changes. Were you able to find the blue sign?</p>
+<p><strong>Alex:</strong> Yes, I can see it. Thanks for helping me sort this out.</p></div></details><h3 class="mt-5">Shadowing</h3><p>Listen again and shadow these five phrases. Focus on connected speech, polite intonation, and stress on key information:</p><ol class="list-decimal ml-6"><li>Could you clarify where I’m supposed to check in?</li><li>Let me repeat that to make sure I understood.</li><li>Make sure you have your photo ID and confirmation email ready.</li><li>Would it be possible to confirm whether I’m also registered?</li><li>I’ll follow up with Maya now, and I’ll keep you updated.</li></ol><label class="flex gap-2 mt-3"><input id="shadowDone" type="checkbox"/> I practiced all five phrases aloud.</label><div class="mt-8 flex justify-between"><button class="text-slate-500 hover:text-slate-700 font-medium text-sm" onclick="switchStep(3)">← Back</button><button class="text-brand-600 hover:text-brand-800 font-bold text-sm" onclick="switchStep(5)">Next Section →</button></div></div></section><section class="step-section" id="step-5"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6"><span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">05 · Writing · 5 min</span><h2 class="mt-3">Help a Customer Find Their Way</h2><p>A customer says: <em>“I have an appointment on Friday between 9:00 and 11:00 AM. I think it's at Oak Street in Toronto, but I don't have the building number. Can you help?”</em></p><p>Write a <strong>40–70 word</strong> professional response. Ask for the missing address information, verify the appointment time, and explain what you will do next. Include at least one polite request and one workplace expression such as <em>look into, follow up on, make sure</em>.</p><label for="writingResponse">Your customer response</label><textarea class="homework-input" id="writingResponse" placeholder="Of course. Could you please..." rows="6"></textarea><button class="homework-action" onclick="checkWriting()">Check writing requirements</button><div aria-live="polite" class="feedback" id="writingFeedback"></div><p class="text-sm text-slate-500">This check reviews length and language features, not whether your response is fully accurate. Your trainer reviews the writing.</p><div class="mt-8 flex justify-between"><button class="text-slate-500 hover:text-slate-700 font-medium text-sm" onclick="switchStep(4)">← Back</button><button class="text-brand-600 hover:text-brand-800 font-bold text-sm" onclick="switchStep(6)">Next Section →</button></div></div></section><section class="step-section" id="step-6"><div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6"><span class="inline-block bg-brand-100 text-brand-800 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide">06 · Final Challenge · 10 min</span><h2 class="mt-3">Drive &amp; Decide: The Road to Orientation</h2><p>You're on your way to the Training Center. Answer 10 questions covering <strong>Vocabulary, Expressions 1, Grammar, Expressions 2, and Soft Skills</strong>. Choose the correct road. Three wrong turns and <strong>YOU GOT LOST!</strong></p><div class="road-shell"><div class="road-hud"><span id="roadProg">Intersection 1 / 10</span><span aria-label="Mistakes" id="roadLives">✕ ✕ ✕</span></div><div class="road-question" id="roadQuestion">Ready to drive?</div><div class="road-stage"><svg aria-hidden="true" preserveaspectratio="xMidYMid slice" viewbox="0 0 600 420">
+<rect fill="#4c9a52" height="420" width="600"></rect>
+<g fill="#3b8040"><circle cx="40" cy="330" r="22"></circle><circle cx="560" cy="330" r="22"></circle><circle cx="60" cy="250" r="16"></circle><circle cx="545" cy="250" r="16"></circle><circle cx="300" cy="60" r="0"></circle></g>
+<g fill="none" stroke="#454a57" stroke-width="92">
+<path d="M300 420 L300 270 Q300 190 150 150 L150 0"></path>
+<path d="M300 420 L300 270 Q300 190 450 150 L450 0"></path>
+</g>
+<g fill="none" opacity=".85" stroke="#fff" stroke-dasharray="14 12" stroke-width="3">
+<path d="M300 420 L300 270 Q300 190 150 150 L150 0"></path>
+<path d="M300 420 L300 270 Q300 190 450 150 L450 0"></path>
+</g>
+<path d="M300 380 L300 270 Q300 190 150 150 L150 0" fill="none" id="pL"></path>
+<path d="M300 380 L300 270 Q300 190 450 150 L450 0" fill="none" id="pR"></path>
+<g id="car" transform="translate(300 380)">
+<rect fill="#e53935" height="52" rx="9" width="30" x="-15" y="-26"></rect>
+<rect fill="#bfe3ff" height="11" rx="3" width="22" x="-11" y="-14"></rect>
+<rect fill="#bfe3ff" height="8" rx="3" width="22" x="-11" y="8"></rect>
+<rect fill="#222" height="12" rx="2" width="4" x="-18" y="-20"></rect><rect fill="#222" height="12" rx="2" width="4" x="14" y="-20"></rect>
+<rect fill="#222" height="12" rx="2" width="4" x="-18" y="8"></rect><rect fill="#222" height="12" rx="2" width="4" x="14" y="8"></rect>
+</g>
+</svg><button class="road-sign" id="roadLeft" onclick="roadChoose('left')">← LEFT</button><button class="road-sign" id="roadRight" onclick="roadChoose('right')">RIGHT →</button><div class="road-overlay" id="roadOverlay"><div class="road-modal" id="roadModal"><h3>Drive &amp; Decide</h3><p>10 intersections. 3 mistakes. Reach the Training Center!</p><button class="homework-action" onclick="roadStart()">Start Driving</button></div></div></div><div class="road-controls"><button onclick="roadChoose('left')">← Left / A</button><button onclick="roadChoose('right')">Right / D →</button></div><p class="text-sm text-slate-500">Use ← / → or A / D, or select the road signs. Correct answers move your car forward. Incorrect answers cost one life. Press Restart if you get lost.</p><div aria-live="polite" class="feedback" id="roadFeedback"></div></div><h3 class="mt-6">Homework Submission Summary</h3><p>Check your completed activities before submitting your Vocaroo link and written response according to your trainer's instructions.</p><div class="p-4 bg-slate-50 rounded-xl border border-slate-200" id="summary"></div><button class="homework-action" onclick="renderSummary()">Refresh summary</button><div class="mt-8 flex justify-between"><button class="text-slate-500 hover:text-slate-700 font-medium text-sm" onclick="switchStep(5)">← Back</button><button class="text-brand-600 hover:text-brand-800 font-bold text-sm" onclick="switchStep(6)">Finish ✓</button></div></div></section></main>
+<!-- Master bottom navigation: available on every lesson screen -->
+<div aria-label="Lesson navigation" class="master-bottom-nav no-print">
+<button disabled="" id="previous-section" onclick="switchStep(currentStep-1)" type="button">← Back</button>
+<span id="bottom-section-label" style="color:#54595f;font-size:14px;font-weight:500">Overview · 1 of 7</span>
+<button id="next-section" onclick="switchStep(currentStep+1)" type="button">Next →</button>
+</div>
+<!-- FOOTER -->
+<footer class="bg-[#2a2c2e] border-t border-[#54595f] text-slate-400 text-xs py-6 text-center no-print mt-auto">
+<div class="max-w-7xl mx-auto px-4">
+<p>10 Week English Program | Lesson 1.3.7: Asynchronous Homework (CEFR A2–B1)</p>
+<p class="text-slate-500 text-[10px] mt-1">Independent learning · 70 minutes · Trainer-guided audio distribution</p>
+</div>
+</footer>
+<!-- JAVASCRIPT LOGIC -->
+<script>
+let currentStep=0;const $=id=>document.getElementById(id);const progress={};
+function switchStep(n){if(n<0||n>6)return;currentStep=n;document.querySelectorAll('.step-section').forEach((el,i)=>el.classList.toggle('active',i===n));document.querySelectorAll('.nav-tab').forEach((el,i)=>{el.classList.toggle('bg-brand-600',i===n);el.classList.toggle('text-white',i===n);el.classList.toggle('text-slate-300',i!==n);el.setAttribute('aria-current',i===n?'step':'false')});$('progress-bar').style.width=((n+1)/7*100)+'%';$('progress-track').setAttribute('aria-valuenow',n+1);$('previous-section').disabled=n===0;$('next-section').disabled=n===6;$('next-section').textContent=n===6?'Completed ✓':'Next →';$('bottom-section-label').textContent=document.querySelectorAll('.nav-tab')[n].textContent.trim()+' · '+(n+1)+' of 7';window.scrollTo({top:0,behavior:'smooth'});if(n===6)renderSummary()}
+const sets={
+grammar:[
+['The supervisor ___ me to handle customer inquiries.',['assigned','followed up','ran into'],0,'Assigned to means given responsibility for a task.'],
+['We ___ an issue with the payment system this morning.',['ran into','set up','were in charge of'],0,'Run into an issue means encounter a problem.'],
+['I will ___ the problem and get back to you.',['look into','set up','be assigned to'],0,'Look into means investigate.'],
+['Maya is ___ updating the customer records.',['in charge of','in charge to','in charge for'],0,'The correct collocation is in charge of + noun or -ing.'],
+['Choose the correct negative instruction.',['Don’t share your password.','Don’t to share your password.','Not share your password.'],0,'Don’t + base verb.'],
+['Choose the correct affirmative imperative.',['Select Notifications.','Selecting Notifications.','To select Notifications.'],0,'An imperative starts with the base verb.'],
+['Which sequence is logical?',['First open Settings, next select Notifications, finally save.','First save, next open Settings, finally select Notifications.','First select Notifications, next save, finally open Settings.'],0,'Steps should be in a useful order.'],
+['Which sentence is a polite request rather than an imperative?',['Could you please confirm the address?','Confirm the address.','Do not close the page.'],0,'Could you please...? makes a request.'],
+['Which request uses would you mind correctly?',['Would you mind checking the address?','Would you mind to check the address?','Would you mind check the address?'],0,'Would you mind + -ing.'],
+['A report must arrive no later than Friday. Submit it ___.',['by Friday','on Friday','in Friday'],0,'By Friday indicates a deadline.'],
+['The office is ___ Oak Street, ___ Toronto.',['on / in','at / on','in / at'],0,'On for street names; in for cities.'],
+['Which checks whether a customer completed a step?',['Were you able to open the menu?','Open the menu.','You are opening the menu.'],0,'Were you able to...? checks completion.']],
+reading:[
+["Why was the original check-in area closed?",["The security system is being replaced.", "The morning orientation was canceled.", "The workshop was moved to another room."],0,"The main entrance is unavailable due to security-system maintenance."],
+["Where must new hires report?",["At the east building service desk at 24 Oak Street.", "At the parking-lot entrance at 24 Oak Street.", "At the library information desk on Oak Street."],0,"Check-in has moved to the east building service desk."],
+["What is the difference between 8:45 AM and 9:00 AM in the notice?",["Verification must be finished by 8:45; orientation starts at 9:00.", "Verification begins at 8:45; orientation ends at 9:00.", "Everyone may arrive at 9:00 if they have an email."],0,"By 8:45 is a completion deadline, not the session start."],
+["What should someone do if the confirmation email has not arrived by Friday?",["Contact the team before the weekend.", "Wait until the Tuesday session begins.", "Ask the maintenance team to print a new one."],0,"The notice asks people to contact the team before the weekend."],
+["What is Alex responsible for?",["Coordinating with building staff and directing visitors.", "Handling identity-verification questions.", "Replacing the security system."],0,"Alex has been assigned to coordinate and guide visitors."],
+["Why should participants avoid asking multiple employees about the same issue?",["A single team member will own the issue and provide updates.", "Only one employee is allowed to speak to visitors.", "The team does not handle registration problems."],0,"One owner prevents duplicated investigation and keeps communication clear."],
+["Which statement about the afternoon workshop is accurate?",["It is optional and requires completed orientation.", "It is required for every new hire.", "It replaces the morning orientation."],0,"The workshop is optional for participants who have completed orientation."],
+["Which room is used for the afternoon workshop?",["Room 204.", "The morning orientation room.", "The east building service desk."],0,"Room 204 is specified, and the text contrasts it with the morning room."],
+["What does “follow up on the request” mean in context?",["Check the unresolved email issue again and communicate about it.", "Transfer every unanswered email to maintenance.", "Send a new registration form without checking."],0,"Follow up means return to an outstanding matter."],
+["What can be inferred about the entrance facing the parking lot?",["It is not the correct check-in entrance.", "It will be used for the afternoon workshop.", "It is the only entrance open to visitors."],0,"The notice contrasts the east entrance with the parking-lot-facing entrance."]
+],
+listening:[
+["What problem starts the call?",["Alex reached a closed entrance despite following the earlier email.", "Alex arrived at the wrong city.", "Alex missed the afternoon workshop."],0,"The previous email led Alex to the now-closed main entrance."],
+["Why has the check-in location changed?",["A security-system problem affected the original entrance.", "The library is hosting the morning orientation.", "The parking lot has been reserved for staff."],0,"Jordan mentions an issue with the security system."],
+["Which route does Jordan give from the library?",["Walk north past the café, turn right, then follow the blue sign.", "Walk south past the café, turn left, then follow the blue sign.", "Cross the parking lot and use the maintenance door."],0,"The instructions include north, past the café, right, and the blue sign."],
+["Why does Alex repeat the directions?",["To confirm understanding before continuing.", "To request a different destination.", "To correct Jordan’s pronunciation."],0,"Let me repeat that to make sure I understood is a confirmation strategy."],
+["What must happen by 8:45 AM?",["Identity verification must be completed.", "The afternoon workshop must begin.", "All registration emails must be sent."],0,"Jordan distinguishes the verification deadline from the 9:00 start."],
+["Why does Jordan involve Maya?",["Maya handles registration problems, while Jordan must remain at the welcome area.", "Maya is responsible for maintaining the security system.", "Jordan is unsure which street the building is on."],0,"The roles are divided: Jordan welcomes visitors and Maya resolves registration issues."],
+["What is Alex uncertain about besides the entrance?",["Whether they registered for the optional afternoon workshop.", "Whether the morning orientation is mandatory.", "Whether the workshop starts at 9:00 AM."],0,"Alex asks Maya to verify workshop registration."],
+["What does Jordan tell Alex about the afternoon workshop?",["It is optional, from 2:00 to 4:00 PM, in Room 204.", "It is mandatory, from 2:00 to 4:00 PM, in the morning room.", "It is optional, from 9:00 to 11:00 AM, in Room 204."],0,"Jordan confirms the optional workshop time and different room."],
+["What should Alex do while Jordan contacts Maya?",["Go directly to the service desk.", "Wait outside for Maya to arrive.", "Return to the main entrance."],0,"Jordan explicitly says not to wait outside."],
+["Which phrase best describes Jordan’s final commitment?",["Coordinate with Maya and provide updates if the situation changes.", "Ask Alex to investigate the registration issue independently.", "Move the afternoon workshop to the service desk."],0,"Jordan promises to follow up with Maya and keep Alex updated."]
+]};
+function renderSet(name){const el=$(name+'Qs');el.innerHTML='';sets[name].forEach((q,i)=>{let opts=q[1].map((v,j)=>({v,j}));opts=opts.sort(()=>Math.random()-.5);const box=document.createElement('div');box.className='question-card';const h=document.createElement('p');h.innerHTML='<strong>'+(i+1)+'. </strong>';h.append(document.createTextNode(q[0]));box.append(h);opts.forEach(o=>{const lab=document.createElement('label'),input=document.createElement('input');input.type='radio';input.name=name+'-'+i;input.value=o.j;lab.append(input,document.createTextNode(o.v));box.append(lab)});const feedback=document.createElement('div');feedback.className='why';feedback.id=name+'-why-'+i;feedback.hidden=true;box.append(feedback);el.append(box)})}
+function gradeSet(name){let score=0,unanswered=0;sets[name].forEach((q,i)=>{const checked=document.querySelector('input[name="'+name+'-'+i+'"]:checked');const fb=$(name+'-why-'+i);if(!checked){unanswered++;fb.hidden=false;fb.textContent='Select an answer before checking.';return}const ok=Number(checked.value)===q[2];if(ok)score++;fb.hidden=false;fb.style.color=ok?'#166534':'#b42318';fb.textContent=(ok?'✓ Correct. ':'✕ Not quite. ')+q[3]});$(name+'Feedback').textContent='Score: '+score+'/'+sets[name].length+(unanswered?' · '+unanswered+' unanswered.':'');progress[name]=unanswered===0?score+'/'+sets[name].length:'Incomplete';renderSummary()}
+function resetSet(name){document.querySelectorAll('#'+name+'Qs input').forEach(x=>x.checked=false);document.querySelectorAll('#'+name+'Qs .why').forEach(x=>x.hidden=true);$(name+'Feedback').textContent='';delete progress[name];renderSummary()}
+function checkSpeaking(){const link=$('vocaroo').value.trim();const checks=[...document.querySelectorAll('#speakChecks input')];const valid=/^https:\/\/(?:www\.)?(?:voca\.ro|vocaroo\.com)\//i.test(link);const done=checks.every(x=>x.checked);$('speakFeedback').textContent=valid&&done?'✓ Recording link and checklist complete. Share it according to your trainer’s instructions.':(!valid?'Enter a valid Vocaroo recording link. ':'')+(!done?'Complete the speaking checklist.':'');progress.speaking=valid&&done?'Complete':'Incomplete';renderSummary()}
+function checkWriting(){const s=$('writingResponse').value.trim();const words=s.split(/\s+/).filter(Boolean).length;const polite=/could you|would you|may i|could i/i.test(s), verify=/confirm|verify|repeat|clarify/i.test(s),next=/look into|follow up|make sure|check|update/i.test(s);const ok=words>=40&&words<=70&&polite&&verify&&next;$('writingFeedback').textContent='Words: '+words+'/40–70 · Polite request: '+(polite?'✓':'✕')+' · Verification: '+(verify?'✓':'✕')+' · Next step: '+(next?'✓':'✕')+'. '+(ok?'Requirements met. Your trainer will review meaning and accuracy.':'Revise your response to meet all requirements.');progress.writing=ok?'Requirements met':'Needs revision';renderSummary()}
+function renderSummary(){if(!$('summary'))return;const rows=[['Speaking',progress.speaking],['Grammar',progress.grammar],['Reading',progress.reading],['Listening',progress.listening],['Shadowing',$('shadowDone')?.checked?'Practiced':'Not marked'],['Writing',progress.writing],['Drive & Decide',progress.road]];$('summary').innerHTML=rows.map(([k,v])=>'<div class="flex justify-between gap-3 border-b border-slate-200 py-2"><span>'+k+'</span><strong>'+ (v||'Not completed')+'</strong></div>').join('')}
+const roadQs=[
+{q:'Your supervisor says: “You’ve been assigned to handle customer inquiries.” What is your responsibility?',c:'Manage customer inquiries.',w:'Assign customer inquiries to other agents.',why:'Handle means manage; assign means give a task to someone.'},
+{q:'“I’ll look into the issue and follow up with you.” What will the agent do?',c:'Investigate the issue, then contact the customer with an update.',w:'Contact the customer to request an update before investigating.',why:'Look into means investigate; follow up means contact again about the issue.'},
+{q:'The documents must arrive no later than Friday. Which instruction matches?',c:'Submit the documents by Friday.',w:'Submit the documents on Friday.',why:'By Friday is a deadline; on Friday specifies that day.'},
+{q:'Confirm the specific address: 24 Oak Street. Which sentence is correct?',c:'Your appointment is at 24 Oak Street.',w:'Your appointment is on 24 Oak Street.',why:'At is used with a specific street address; on with the street name.'},
+{q:'A customer is about to share a password. Which instruction is correct?',c:'Don’t share your password.',w:'Don’t to share your password.',why:'Negative imperatives use don’t + base verb.'},
+{q:'A customer needs to change notifications. Choose the correct sequence.',c:'First, open Settings. Next, select Notifications. Finally, save.',w:'First, open Settings. Next, save. Finally, select Notifications.',why:'Choose the setting before saving the changes.'},
+{q:'Ask a customer to confirm their email politely. Which request is correct?',c:'Could you please confirm your email address?',w:'Would you mind to confirm your email address?',why:'Could you please + base verb; would you mind + -ing.'},
+{q:'You didn’t hear the street name. What is the most direct clarification request?',c:'Could you repeat the street name, please?',w:'Could you spell the street name, please?',why:'Repeat asks to hear the name again; spelling helps once the name is known.'},
+{q:'You need to verify whether a customer means Vancouver in Canada or the US. Which is accurate?',c:'Vancouver, British Columbia, or Vancouver, Washington?',w:'Vancouver, Ontario, or Vancouver, Washington?',why:'Vancouver is in British Columbia, Canada, and Washington, USA.'},
+{q:'Your destination is in Toronto, Ontario. What is Ontario?',c:'A Canadian province.',w:'A Canadian territory.',why:'Ontario is a province, not a territory.'}
+];
+let roadIndex=0,roadMistakes=0,roadPlaying=false,roadBusy=true,roadSides=null,roadAttempts=0;
+const car=$('car'),pL=$('pL'),pR=$('pR');
+function roadHud(){$('roadProg').textContent='Intersection '+Math.min(roadIndex+1,10)+' / 10';$('roadLives').textContent='Mistakes: '+roadMistakes+' / 3'}
+function roadRender(){const q=roadQs[roadIndex],left=Math.random()<.5;roadSides={left:left?q.c:q.w,right:left?q.w:q.c,correct:left?'left':'right'};$('roadQuestion').textContent=q.q;$('roadLeft').textContent='← '+roadSides.left;$('roadRight').textContent=roadSides.right+' →';$('roadLeft').className='road-sign';$('roadRight').className='road-sign';car.setAttribute('transform','translate(300 380)');roadHud();roadBusy=false}
+function roadMove(path,a,b,ms){if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)ms=1;return new Promise(resolve=>{const len=path.getTotalLength(),start=performance.now();function frame(now){const t=Math.min(1,(now-start)/ms),e=t*t*(3-2*t),d=len*(a+(b-a)*e),p=path.getPointAtLength(d),q=path.getPointAtLength(Math.min(len,d+2)),r=path.getPointAtLength(Math.max(0,d-2));const angle=Math.atan2(q.x-r.x,-(q.y-r.y))*180/Math.PI;car.setAttribute('transform','translate('+p.x+' '+p.y+') rotate('+angle+')');t<1?requestAnimationFrame(frame):resolve()}requestAnimationFrame(frame)})}
+function roadStart(){roadAttempts++;roadIndex=0;roadMistakes=0;roadPlaying=true;$('roadOverlay').classList.add('hide');$('roadFeedback').textContent='';delete progress.road;roadRender();renderSummary()}
+async function roadChoose(side){if(!roadPlaying||roadBusy||currentStep!==6)return;roadBusy=true;const btn=$(side==='left'?'roadLeft':'roadRight'),path=side==='left'?pL:pR;btn.classList.add(side===roadSides.correct?'ok':'bad');if(side===roadSides.correct){$('roadFeedback').textContent='✓ Correct! '+roadQs[roadIndex].why;await roadMove(path,0,1,1100);roadIndex++;if(roadIndex===10){roadPlaying=false;roadHud();progress.road='Destination reached · '+roadMistakes+' mistake(s) · attempt '+roadAttempts;renderSummary();roadEnd(true);return}roadRender()}else{roadMistakes++;roadHud();$('roadFeedback').textContent='Wrong turn! '+roadQs[roadIndex].why;await roadMove(path,0,.45,550);await new Promise(r=>setTimeout(r,400));if(roadMistakes>=3){roadPlaying=false;progress.road='Got lost · attempt '+roadAttempts;renderSummary();roadEnd(false);return}await roadMove(path,.45,0,450);roadRender()}}
+function roadEnd(win){$('roadOverlay').classList.remove('hide');$('roadModal').innerHTML='<h3>'+(win?'🏁 DESTINATION REACHED!':'🧭 YOU GOT LOST!')+'</h3><p>'+(win?'You reached the Training Center after all 10 intersections.':'You made three wrong turns. Review the GPS challenges and try again.')+'</p><p>Attempts: '+roadAttempts+' · Mistakes this attempt: '+roadMistakes+'</p><button class="homework-action" onclick="roadStart()">'+(win?'Play Again':'Restart Journey')+'</button>'}
+window.addEventListener('keydown',e=>{if(currentStep!==6||!roadPlaying||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;const k=e.key.toLowerCase();if(k==='arrowleft'||k==='a'){e.preventDefault();roadChoose('left')}if(k==='arrowright'||k==='d'){e.preventDefault();roadChoose('right')}});
+['grammar','reading','listening'].forEach(renderSet);const speaking=['I described two responsibilities.','I explained an issue and a follow-up action.','I gave directions with sequence words.','I included a polite confirmation request.'];$('speakChecks').innerHTML=speaking.map((t,i)=>'<label class="flex items-start gap-2 my-2"><input type="checkbox" id="sp'+i+'">'+t+'</label>').join('');$('shadowDone').addEventListener('change',renderSummary);$('writingResponse').addEventListener('input',()=>{delete progress.writing;renderSummary()});$('vocaroo').addEventListener('input',()=>{delete progress.speaking;renderSummary()});renderSummary();
+</script>
+</body>
+</html>
